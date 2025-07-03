@@ -12,7 +12,8 @@ def calcular_das_completo(anexo, faturamento, rbt12):
     das = faturamento * aliq_efetiva
 
     partilha = distribuicao[anexo]
-    dist = {imposto: round(das * perc, 2) for imposto, perc in partilha.items() if imposto != "PD"}
+    dist = {imp: round(das * perc, 2)
+            for imp, perc in partilha.items() if imp != "PD"}
 
     return aliq_efetiva, das, dist
 
