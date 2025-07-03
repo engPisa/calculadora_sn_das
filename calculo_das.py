@@ -1,11 +1,18 @@
 def calcular_das_completo(anexo, faturamento, rbt12):
-    from tabelas import tabelas_simples, distribuicao
+    """Calcula DAS, determinando a faixa e a distribuicao especifica."""
+    import json
+    from tabelas import tabelas_simples
+
+    with open("distribuicao_impostos.json", "r", encoding="utf-8") as f:
+        distribuicao = json.load(f)
 
     tabela = tabelas_simples[anexo]
-    for faixa in tabela:
+    faixa_num = None
+    for idx, faixa in enumerate(tabela, start=1):
         if rbt12 <= faixa["limite"]:
             aliquota = faixa["aliquota"] / 100
             deducao = faixa["deducao"]
+            faixa_num = str(idx)
             break
 
     aliq_efetiva = ((faturamento * aliquota) - deducao) / faturamento
