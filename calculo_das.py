@@ -2,13 +2,18 @@ def calcular_das_completo(anexo, faturamento, rbt12):
     from tabelas import tabelas_simples, distribuicao
 
     tabela = tabelas_simples[anexo]
+
+    limite_maximo = max(faixa["limite"] for tab in tabelas_simples.values() for faixa in tab)
+    if rbt12 > limite_maximo:
+        raise ValueError("RBT12 excede o limite do Simples Nacional.")
+
     for faixa in tabela:
         if rbt12 <= faixa["limite"]:
             aliquota = faixa["aliquota"] / 100
             deducao = faixa["deducao"]
             break
 
-    aliq_efetiva = ((faturamento * aliquota) - deducao) / faturamento
+    aliq_efetiva = ((rbt12 * aliquota) - deducao) / rbt12
     das = faturamento * aliq_efetiva
 
     partilha = distribuicao[anexo]
