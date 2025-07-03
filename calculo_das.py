@@ -2,17 +2,23 @@ def calcular_das_completo(anexo, faturamento, rbt12):
     from tabelas import tabelas_simples, distribuicao
 
     tabela = tabelas_simples[anexo]
-    for faixa in tabela:
+    faixa_indice = None
+    for idx, faixa in enumerate(tabela, start=1):
         if rbt12 <= faixa["limite"]:
             aliquota = faixa["aliquota"] / 100
             deducao = faixa["deducao"]
+            faixa_indice = idx
             break
 
     aliq_efetiva = ((faturamento * aliquota) - deducao) / faturamento
     das = faturamento * aliq_efetiva
 
-    partilha = distribuicao[anexo]
-    dist = {imposto: round(das * perc, 2) for imposto, perc in partilha.items() if imposto != "PD"}
+    partilha = distribuicao.get(anexo, {}).get(faixa_indice, {})
+    dist = {
+        imposto: round(das * perc, 2)
+        for imposto, perc in partilha.items()
+        if imposto != "PD"
+    }
 
     return aliq_efetiva, das, dist
 
